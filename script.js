@@ -6,7 +6,39 @@ $(function () {
     // Display the current day in the header
     const currentDay = dayjs().format("MMMM D, YYYY");
     $("#currentDay").text(currentDay);
-  
+   // Add past, present, future classes to time-blocks
+   $(".time-block").each(function () {
+    let blockHour = parseInt($(this).attr("id").split("-")[1]);
+    let currentHour = dayjs().hour();
+
+    $(this).removeClass("past present future");
+
+    if (blockHour < currentHour) {
+      $(this).addClass("past");
+    } else if (blockHour === currentHour) {
+      $(this).addClass("present");
+    } else {
+      $(this).addClass("future");
+    }
+  });
+
+    // Save to localStorage on button click
+    $(".saveBtn").click(function () {
+        const hour = $(this).parent().attr("id").split("-")[1];
+        const eventText = $(this).siblings("textarea").val();
+        localStorage.setItem(hour, eventText);
+      });
+    
+      // Load from localStorage
+      $(".time-block").each(function () {
+        const hour = $(this).attr("id").split("-")[1];
+        const eventText = localStorage.getItem(hour);
+        if (eventText) {
+          $(this).find("textarea").val(eventText);
+        }
+      });
+    });
+
     // TODO: Add a listener for click events on the save button. This code should
     // use the id in the containing time-block as a key to save the user input in
     // local storage. HINT: What does `this` reference in the click listener
@@ -25,4 +57,4 @@ $(function () {
     // attribute of each time-block be used to do this?
     //
     // TODO: Add code to display the current date in the header of the page.
-  });
+  ;
